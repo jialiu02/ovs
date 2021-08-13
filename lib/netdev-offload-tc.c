@@ -1258,7 +1258,8 @@ parse_tc_flower_to_match(struct tc_flower *flower,
             }
             break;
             case TC_ACT_POLICE: {
-                /* Not supported yet */
+                nl_msg_put_u32(buf, OVS_ACTION_ATTR_METER,
+                               action->police.meter_id);
             }
             break;
             }
@@ -2335,6 +2336,18 @@ netdev_tc_flow_put(struct netdev *netdev, struct match *match,
             if (err) {
                 goto out;
             }
+        } else if (nl_attr_type(nla) == OVS_ACTION_ATTR_METER) {
+            uint32_t police_index;
+
+            action->type = TC_ACT_POLICE;
+            action->police.meter_id = nl_attr_get_u32(nla);
+            if (dpif_offload_netlink_meter_lookup(action->police.meter_id,
+                                                  &police_index)) {
+                return EOPNOTSUPP;
+            }
+
+            action->police.index = police_index;
+            flower.action_count++;
         } else {
             VLOG_DBG_RL(&rl, "unsupported put action type: %d",
                         nl_attr_type(nla));

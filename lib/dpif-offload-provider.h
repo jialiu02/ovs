@@ -110,5 +110,6 @@ int dpif_offload_meter_del(const struct dpif *, ofproto_meter_id,
                            struct ofputil_meter_stats *, uint16_t);
 
 bool dpif_offload_netlink_psample_supported(void);
+int dpif_offload_netlink_meter_lookup(uint32_t, uint32_t *);
 
 #endif /* DPIF_OFFLOAD_PROVIDER_H */

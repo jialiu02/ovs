@@ -275,6 +275,12 @@ meter_id_lookup(uint32_t meter_id, uint32_t *police_idx)
     return ret;
 }
 
+int
+dpif_offload_netlink_meter_lookup(uint32_t meter_id, uint32_t *police_idx)
+{
+    return meter_id_lookup(meter_id, police_idx);
+}
+
 static void
 meter_id_insert(uint32_t meter_id, uint32_t police_idx)
 {
